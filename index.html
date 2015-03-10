@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Jokenpo</title>
+	<link rel="stylesheet" media="all" href="Styles/default.css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- jquery -->
+    <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="js/dateFormat.js"></script>
+    <script type="text/javascript" src="js/debugConsole.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+
+    <!-- ORTC -->
+	<script type="text/javascript" src="http://dfdbz2tdq3k01.cloudfront.net/js/2.1.0/ortc.js"></script>
+
+ <!--<script src="js/tracking-min.js"></script>
+    <script src="js/dat-gui/build/dat.gui.min.js"></script>
+    <script src="js/stats.min.js"></script>
+    <script src="js/color_camera_gui.js"></script> -->
+
+    <script src="js/JSARToolKit.js"></script>
+    <script src="js/magi.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+      threshold = 128;
+      DEBUG = false;
+      GLOBAL_currId = -1;
+        
+      var video = document.createElement('video');
+      video.width = 600;
+      video.height = 450;
+      video.loop = true;
+      video.volume = 0;
+      video.autoplay = true;
+      video.style.display = 'none';
+      video.controls = true;
+
+        var getUserMedia = function(t, onsuccess, onerror) {
+          if (navigator.getUserMedia) {
+            return navigator.getUserMedia(t, onsuccess, onerror);
+          } else if (navigator.webkitGetUserMedia) {
+            return navigator.webkitGetUserMedia(t, onsuccess, onerror);
+          } else if (navigator.mozGetUserMedia) {
+            return navigator.mozGetUserMedia(t, onsuccess, onerror);
+          } else if (navigator.msGetUserMedia) {
+            return navigator.msGetUserMedia(t, onsuccess, onerror);
+          } else {
+            onerror(new Error("No getUserMedia implementation found."));
+          }
+        };
+        var URL = window.URL || window.webkitURL;
+        var createObjectURL = URL.createObjectURL || webkitURL.createObjectURL;
+        if (!createObjectURL) {
+          throw new Error("URL.createObjectURL not found.");
+        }
+
+        getUserMedia({'video': true},
+          function(stream) {
+            var url = createObjectURL(stream);
+            video.src = url;
+          },
+          function(error) {
+            alert("Couldn't access webcam.");
+          }
+        );
+    </script>
+
+
+<style>
+  video, canvas {
+    margin-left: 100px;
+    margin-top: 35px;
+    position: absolute;
+  }
+</style>
+
+
+</head>
+<body>
+<div class="container tela1 paper">
+  <div class="row title">
+    <h1>Escolha sua jogada</h1>
+  </div>
+  <div class="row optbox">
+    <div class="col-xs-4 opt1 pedra"></div>
+    <div class="col-xs-4 opt2 papel"></div>
+    <div class="col-xs-4 opt3 tesoura"></div>
+  </div>
+</div>
+<div id="Connection1_pnlConnection" class="divPanel">
+    <div class="divPanelInt">
+        <table width="100%" cellspacing="8">
+            <tr>
+                <td colspan="5">
+                    Message
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <textarea name="Connection1$txtMessage" rows="3" cols="20" id="Connection1_txtMessage" style="width:99%;"> This is the message.</textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="Connection1_UpdatePanel1">
+            <div style="float:left">
+                <table>
+                    <tr>
+                    <td style="width:110px">
+                            <input type="Button" Value="Play" class="button" style="width:100px;" onclick="play();" />                            
+                        </td>
+                        <td style="width:110px">
+							<input type="Button" Value="Connect" class="button" style="width:100px;" onclick="Connect();" />                            
+                        </td>
+                        <td style="width:110px">
+							<input type="Button" Value="Send" class="button" style="width:100px;" onclick="Send(selected);" />                            
+                        </td>
+                        <td style="width:110px">
+                            <input type="Button" Value="Subscribe" class="button" style="width:100px;" onclick="Subscribe();" />                            
+                        </td>
+                    </tr>
+                </table>
+            </div>
+	</div>
+
+     <div class="demo-frame">
+    <div id="loading">Carregando...</div>
+    </div>
+
+
+</div>
+
+
+    <input type="hidden" name="Logger1$Collapsiblepanelextender1_ClientState" id="Logger1_Collapsiblepanelextender1_ClientState"/>
+
+<div id="Logger1_pHeader" class="collapsiblePanelTitle">	    
+    Log
+</div>
+
+<div id="Logger1_pnlLogger" class="divPanel">
+	
+    <div class="divPanelInt">
+        <table width="100%">
+            <tr>
+                <td>
+                    <div id="logger" class="log"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="Logger1_UpdatePanel1">
+			<input type="Button" Value="Clear Log" class="button" style="width:100px;" onclick="ClearLog();" />                 
+	</div>
+</div>
+    
+<script>
+    
+  </script>
+
+  <audio id="notify" src="audio/pop.mp3" preload="auto"></audio>
+  <audio id="notify2" src="audio/pop2.mp3" preload="auto"></audio>
+  <audio id="vitoria" src="audio/vitoria.mp3" preload="auto"></audio>
+  <audio id="derrota" src="audio/fail.mp3" preload="auto"></audio>
+  <audio id="empate" src="audio/empate.mp3" preload="auto"></audio>
+   <button onclick="document.getElementById('notify').play()">Reproduzir o áudio</button>
+   <button onclick="document.getElementById('notify2').play()">Reproduzir o áudio longo</button>
+   <button onclick="document.getElementById('vitoria').play()">Reproduzir vitória</button>
+   <button onclick="document.getElementById('derrota').play()">Reproduzir derrota</button>
+   <button onclick="document.getElementById('empate').play()">Reproduzir empate</button>
+
+</body>
+</html>
